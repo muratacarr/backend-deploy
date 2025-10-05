@@ -19,6 +19,11 @@ from app.db.base import Base, engine
 def initialize_database():
     """Initialize database tables and default data"""
     try:
+        # Check if DATABASE_URL is configured
+        if not settings.DATABASE_URL or settings.DATABASE_URL == "sqlite:///./test.db":
+            logger.warning("DATABASE_URL not configured, skipping database initialization")
+            return
+            
         Base.metadata.create_all(bind=engine)
         logger.info("Database tables created successfully")
         
@@ -74,8 +79,12 @@ async def startup_event():
     """Startup event handler"""
     logger.info(f"Starting {settings.APP_NAME}")
     logger.info(f"Debug mode: {settings.DEBUG}")
-    # Initialize database on startup
-    initialize_database()
+    # Initialize database on startup (only if configured)
+    try:
+        initialize_database()
+    except Exception as e:
+        logger.error(f"Startup error: {e}")
+        # Don't crash the app if database initialization fails
 
 
 @app.on_event("shutdown")
