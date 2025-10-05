@@ -627,7 +627,7 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 
 ---
 
-**Note**: This system should undergo security testing before being used in production.
+**Note**: This system should undergo security testing before being used in production
 
 ## 📚 Additional Resources
 
