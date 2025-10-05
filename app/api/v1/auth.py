@@ -224,6 +224,58 @@ async def login(
     }
 
 
+@router.post("/resend-login-otp", status_code=status.HTTP_200_OK)
+async def resend_login_otp(
+    otp_request: OTPRequest,
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    """Resend OTP for login verification"""
+    try:
+        # Check if user exists and is verified
+        user = db.query(User).filter(
+            User.email == otp_request.email,
+            User.is_deleted is False,
+            User.is_verified is True,
+            User.is_active is True
+        ).first()
+        
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found or account not verified"
+            )
+        
+        # Create new OTP for login
+        await OTPService.create_otp(db, otp_request.email, purpose="login")
+        
+        # Log audit
+        AuditService.log_action(
+            db=db,
+            action="login_otp_resend",
+            user_id=user.id,
+            resource="auth",
+            details={"email": otp_request.email},
+            ip_address=get_client_ip(request),
+            user_agent=get_user_agent(request),
+            status="success"
+        )
+        
+        return {
+            "message": "Login OTP sent successfully",
+            "email": otp_request.email,
+            "expires_in_minutes": 5
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error resending login OTP: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to resend login OTP"
+        )
+
+
 @router.post("/verify-login", response_model=Token)
 async def verify_login(
     verify_data: VerifyAccountRequest,
