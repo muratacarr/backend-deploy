@@ -1,349 +1,349 @@
 # FastAPI Authentication System
 
-## 🔐 Güvenli Kimlik Doğrulama ve Yetkilendirme Sistemi
+## 🔐 Secure Authentication and Authorization System
 
-Bu proje, JWT tabanlı kimlik doğrulama, OTP doğrulama, rol tabanlı yetkilendirme ve audit logging içeren kapsamlı bir FastAPI backend sistemidir.
+This project is a comprehensive FastAPI backend system that includes JWT-based authentication, OTP verification, role-based authorization, and audit logging.
 
-## ✨ Özellikler
+## ✨ Features
 
-### 🔐 Kimlik Doğrulama
+### 🔐 Authentication
 
-- **JWT Token** tabanlı authentication
-- **OTP (One-Time Password)** doğrulama sistemi
-- **Email** ile OTP gönderimi
-- **Refresh Token** mekanizması
-- **2FA (Two-Factor Authentication)** her login'de
-- **Session management** ve güvenli logout
-- **Token Blacklist Sistemi** - Logout sonrası token'ların geçersiz hale getirilmesi
-- **JTI (JWT ID)** ile token takibi ve blacklist kontrolü
+- **JWT Token** based authentication
+- **OTP (One-Time Password)** verification system
+- **Email** OTP delivery
+- **Refresh Token** mechanism
+- **2FA (Two-Factor Authentication)** on every login
+- **Session management** and secure logout
+- **Token Blacklist System** - Tokens are invalidated after logout
+- **JTI (JWT ID)** for token tracking and blacklist control
 
-### 👥 Kullanıcı Yönetimi
+### 👥 User Management
 
-- **Rol tabanlı yetkilendirme** (User, Moderator, Admin)
-- **Permission sistemi** ile granüler erişim kontrolü
-- **Kullanıcı kayıt** ve **hesap doğrulama**
-- **Profil yönetimi** ve **şifre değiştirme**
-- **Kullanıcı aktivasyon/deaktivasyon**
-- **Soft delete** mekanizması
+- **Role-based authorization** (User, Moderator, Admin)
+- **Permission system** with granular access control
+- **User registration** and **account verification**
+- **Profile management** and **password change**
+- **User activation/deactivation**
+- **Soft delete** mechanism
 
-### 🛡️ Güvenlik
+### 🛡️ Security
 
-- **Audit logging** tüm kritik işlemler için
-- **IP adresi** ve **user agent** takibi
-- **Rate limiting** ve **input validation**
-- **SQL injection** koruması
-- **XSS** koruması
-- **CORS** yapılandırması
-- **HTTPS** desteği
+- **Audit logging** for all critical operations
+- **IP address** and **user agent** tracking
+- **Rate limiting** and **input validation**
+- **SQL injection** protection
+- **XSS** protection
+- **CORS** configuration
+- **HTTPS** support
 
-### 📊 Yönetim Paneli
+### 📊 Admin Panel
 
-- **Admin dashboard** tam kullanıcı yönetimi
-- **Moderator panel** sınırlı yönetici yetkileri
-- **Audit log** görüntüleme ve analiz
-- **Rol ve permission** yönetimi
-- **Content moderation** sistemi
-- **Report management** sistemi
+- **Admin dashboard** for complete user management
+- **Moderator panel** with limited admin privileges
+- **Audit log** viewing and analysis
+- **Role and permission** management
+- **Content moderation** system
+- **Report management** system
 
-### 📝 İçerik Yönetimi
+### 📝 Content Management
 
-- **Content CRUD** işlemleri
-- **Content moderation** sistemi
-- **Public/Private** içerik desteği
-- **Author-based** içerik kontrolü
+- **Content CRUD** operations
+- **Content moderation** system
+- **Public/Private** content support
+- **Author-based** content control
 
-## 🚀 Hızlı Başlangıç
+## 🚀 Quick Start
 
-### Gereksinimler
+### Requirements
 
 - Python 3.8+
-- PostgreSQL (veya SQLite)
-- SMTP sunucusu (email gönderimi için)
-- Redis (opsiyonel, cache için)
+- PostgreSQL (or SQLite)
+- SMTP server (for email sending)
+- Redis (optional, for caching)
 
-### Kurulum
+### Installation
 
-1. **Repository'yi klonlayın**
+1. **Clone the repository**
 
 ```bash
 git clone <repository-url>
 cd backend-deploy
 ```
 
-2. **Virtual environment oluşturun**
+2. **Create virtual environment**
 
 ```bash
 python3 -m venv venv
 source venv/bin/activate  # Linux/Mac
-# veya
+# or
 venv\Scripts\activate  # Windows
 ```
 
-3. **Bağımlılıkları yükleyin**
+3. **Install dependencies**
 
 ```bash
 pip install -r requirements.txt
 ```
 
-4. **Environment variables ayarlayın**
+4. **Set environment variables**
 
 ```bash
 cp .env.example .env
-# .env dosyasını düzenleyin
+# Edit the .env file
 ```
 
-5. **Veritabanını başlatın**
+5. **Initialize database**
 
 ```bash
-# PostgreSQL için
+# For PostgreSQL
 createdb your_database_name
 
-# Migration'ları çalıştırın
+# Run migrations
 alembic upgrade head
 ```
 
-6. **Sunucuyu başlatın**
+6. **Start the server**
 
 ```bash
 make run
-# veya
+# or
 python -m uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-## 📋 API Endpoints ve Rol Erişim Matrisi
+## 📋 API Endpoints and Role Access Matrix
 
 ### 🔐 Authentication (`/api/v1/auth/`)
 
-| Method | Endpoint          | Açıklama                   | User | Moderator | Admin | Permission |
-| ------ | ----------------- | -------------------------- | ---- | --------- | ----- | ---------- |
-| POST   | `/register`       | Kullanıcı kaydı            | ✅   | ✅        | ✅    | -          |
-| POST   | `/login`          | Giriş yapma (OTP gönderir) | ✅   | ✅        | ✅    | -          |
-| POST   | `/verify-login`   | OTP ile giriş doğrulama    | ✅   | ✅        | ✅    | -          |
-| POST   | `/verify-account` | Hesap doğrulama            | ✅   | ✅        | ✅    | -          |
-| POST   | `/resend-otp`     | OTP tekrar gönderme        | ✅   | ✅        | ✅    | -          |
-| POST   | `/refresh`        | Token yenileme             | ✅   | ✅        | ✅    | -          |
-| POST   | `/logout`         | Çıkış yapma                | ✅   | ✅        | ✅    | -          |
-| GET    | `/me`             | Kendi profil bilgileri     | ✅   | ✅        | ✅    | -          |
+| Method | Endpoint          | Description             | User | Moderator | Admin | Permission |
+| ------ | ----------------- | ----------------------- | ---- | --------- | ----- | ---------- |
+| POST   | `/register`       | User registration       | ✅   | ✅        | ✅    | -          |
+| POST   | `/login`          | Login (sends OTP)       | ✅   | ✅        | ✅    | -          |
+| POST   | `/verify-login`   | OTP login verification  | ✅   | ✅        | ✅    | -          |
+| POST   | `/verify-account` | Account verification    | ✅   | ✅        | ✅    | -          |
+| POST   | `/resend-otp`     | Resend OTP              | ✅   | ✅        | ✅    | -          |
+| POST   | `/refresh`        | Token refresh           | ✅   | ✅        | ✅    | -          |
+| POST   | `/logout`         | Logout                  | ✅   | ✅        | ✅    | -          |
+| GET    | `/me`             | Own profile information | ✅   | ✅        | ✅    | -          |
 
 ### 👤 User Management (`/api/v1/users/`)
 
-| Method | Endpoint                | Açıklama                    | User  | Moderator | Admin | Permission        |
-| ------ | ----------------------- | --------------------------- | ----- | --------- | ----- | ----------------- |
-| GET    | `/`                     | Tüm kullanıcıları listeleme | ❌    | ❌        | ✅    | `user_manage`     |
-| GET    | `/{user_id}`            | Kullanıcı detayları         | Kendi | Kendi     | ✅    | `user_read`       |
-| PUT    | `/{user_id}`            | Kullanıcı güncelleme        | Kendi | Kendi     | ✅    | `user_update_own` |
-| PATCH  | `/{user_id}/role`       | Kullanıcı rolü güncelleme   | ❌    | ❌        | ✅    | `user_manage`     |
-| DELETE | `/{user_id}`            | Kullanıcı silme             | ❌    | ❌        | ✅    | `user_manage`     |
-| POST   | `/{user_id}/activate`   | Kullanıcı aktivasyonu       | ❌    | ❌        | ✅    | `user_manage`     |
-| POST   | `/{user_id}/deactivate` | Kullanıcı deaktivasyonu     | ❌    | ❌        | ✅    | `user_manage`     |
+| Method | Endpoint                | Description      | User | Moderator | Admin | Permission        |
+| ------ | ----------------------- | ---------------- | ---- | --------- | ----- | ----------------- |
+| GET    | `/`                     | List all users   | ❌   | ❌        | ✅    | `user_manage`     |
+| GET    | `/{user_id}`            | User details     | Own  | Own       | ✅    | `user_read`       |
+| PUT    | `/{user_id}`            | Update user      | Own  | Own       | ✅    | `user_update_own` |
+| PATCH  | `/{user_id}/role`       | Update user role | ❌   | ❌        | ✅    | `user_manage`     |
+| DELETE | `/{user_id}`            | Delete user      | ❌   | ❌        | ✅    | `user_manage`     |
+| POST   | `/{user_id}/activate`   | Activate user    | ❌   | ❌        | ✅    | `user_manage`     |
+| POST   | `/{user_id}/deactivate` | Deactivate user  | ❌   | ❌        | ✅    | `user_manage`     |
 
 ### 🛡️ Admin Panel (`/api/v1/admin/`)
 
-| Method | Endpoint           | Açıklama                     | User | Moderator | Admin | Permission    |
-| ------ | ------------------ | ---------------------------- | ---- | --------- | ----- | ------------- |
-| GET    | `/users`           | Tüm kullanıcıları yönetme    | ❌   | ❌        | ✅    | `user_manage` |
-| GET    | `/users/{user_id}` | Kullanıcı detayları (admin)  | ❌   | ❌        | ✅    | `user_manage` |
-| PUT    | `/users/{user_id}` | Kullanıcı güncelleme (admin) | ❌   | ❌        | ✅    | `user_manage` |
-| DELETE | `/users/{user_id}` | Kullanıcı silme (admin)      | ❌   | ❌        | ✅    | `user_manage` |
-| GET    | `/audit-logs`      | Audit logları görüntüleme    | ❌   | ❌        | ✅    | `audit_view`  |
+| Method | Endpoint           | Description          | User | Moderator | Admin | Permission    |
+| ------ | ------------------ | -------------------- | ---- | --------- | ----- | ------------- |
+| GET    | `/users`           | Manage all users     | ❌   | ❌        | ✅    | `user_manage` |
+| GET    | `/users/{user_id}` | User details (admin) | ❌   | ❌        | ✅    | `user_manage` |
+| PUT    | `/users/{user_id}` | Update user (admin)  | ❌   | ❌        | ✅    | `user_manage` |
+| DELETE | `/users/{user_id}` | Delete user (admin)  | ❌   | ❌        | ✅    | `user_manage` |
+| GET    | `/audit-logs`      | View audit logs      | ❌   | ❌        | ✅    | `audit_view`  |
 
 ### 🛠️ Moderator Panel (`/api/v1/moderator/`)
 
-| Method | Endpoint                    | Açıklama                            | User | Moderator | Admin | Permission      |
-| ------ | --------------------------- | ----------------------------------- | ---- | --------- | ----- | --------------- |
-| GET    | `/users`                    | Moderation için kullanıcı listesi   | ❌   | ✅        | ✅    | `user_moderate` |
-| GET    | `/users/{user_id}`          | Moderation için kullanıcı detayları | ❌   | ✅        | ✅    | `user_moderate` |
-| PUT    | `/users/{user_id}/suspend`  | Kullanıcı askıya alma               | ❌   | ✅        | ✅    | `user_moderate` |
-| PUT    | `/users/{user_id}/activate` | Kullanıcı aktivasyonu               | ❌   | ✅        | ✅    | `user_moderate` |
-| GET    | `/reports`                  | Rapor yönetimi                      | ❌   | ✅        | ✅    | `report_manage` |
+| Method | Endpoint                    | Description                 | User | Moderator | Admin | Permission      |
+| ------ | --------------------------- | --------------------------- | ---- | --------- | ----- | --------------- |
+| GET    | `/users`                    | User list for moderation    | ❌   | ✅        | ✅    | `user_moderate` |
+| GET    | `/users/{user_id}`          | User details for moderation | ❌   | ✅        | ✅    | `user_moderate` |
+| PUT    | `/users/{user_id}/suspend`  | Suspend user                | ❌   | ✅        | ✅    | `user_moderate` |
+| PUT    | `/users/{user_id}/activate` | Activate user               | ❌   | ✅        | ✅    | `user_moderate` |
+| GET    | `/reports`                  | Report management           | ❌   | ✅        | ✅    | `report_manage` |
 
 ### 📝 Content Management (`/api/v1/content/`)
 
-| Method | Endpoint                 | Açıklama           | User  | Moderator | Admin | Permission           |
-| ------ | ------------------------ | ------------------ | ----- | --------- | ----- | -------------------- |
-| POST   | `/`                      | İçerik oluşturma   | ✅    | ✅        | ✅    | `content_create`     |
-| GET    | `/`                      | İçerik listeleme   | ✅    | ✅        | ✅    | `content_read`       |
-| GET    | `/{content_id}`          | İçerik detayları   | ✅    | ✅        | ✅    | `content_read`       |
-| PUT    | `/{content_id}`          | İçerik güncelleme  | Kendi | Kendi     | ✅    | `content_update_own` |
-| DELETE | `/{content_id}`          | İçerik silme       | Kendi | Kendi     | ✅    | `content_delete_own` |
-| PUT    | `/{content_id}/moderate` | İçerik moderasyonu | ❌    | ✅        | ✅    | `content_moderate`   |
+| Method | Endpoint                 | Description        | User | Moderator | Admin | Permission           |
+| ------ | ------------------------ | ------------------ | ---- | --------- | ----- | -------------------- |
+| POST   | `/`                      | Create content     | ✅   | ✅        | ✅    | `content_create`     |
+| GET    | `/`                      | List content       | ✅   | ✅        | ✅    | `content_read`       |
+| GET    | `/{content_id}`          | Content details    | ✅   | ✅        | ✅    | `content_read`       |
+| PUT    | `/{content_id}`          | Update content     | Own  | Own       | ✅    | `content_update_own` |
+| DELETE | `/{content_id}`          | Delete content     | Own  | Own       | ✅    | `content_delete_own` |
+| PUT    | `/{content_id}/moderate` | Content moderation | ❌   | ✅        | ✅    | `content_moderate`   |
 
 ### 🔑 Role Management (`/api/v1/roles/`)
 
-| Method | Endpoint      | Açıklama                     | User | Moderator | Admin | Permission    |
-| ------ | ------------- | ---------------------------- | ---- | --------- | ----- | ------------- |
-| GET    | `/`           | Rolleri listeleme            | ❌   | ❌        | ✅    | `role_manage` |
-| GET    | `/{role_id}`  | Rol detayları                | ❌   | ❌        | ✅    | `role_manage` |
-| POST   | `/`           | Rol oluşturma                | ❌   | ❌        | ✅    | `role_manage` |
-| PUT    | `/{role_id}`  | Rol güncelleme               | ❌   | ❌        | ✅    | `role_manage` |
-| DELETE | `/{role_id}`  | Rol silme                    | ❌   | ❌        | ✅    | `role_manage` |
-| POST   | `/initialize` | Varsayılan rolleri oluşturma | ❌   | ❌        | ✅    | `role_manage` |
+| Method | Endpoint      | Description          | User | Moderator | Admin | Permission    |
+| ------ | ------------- | -------------------- | ---- | --------- | ----- | ------------- |
+| GET    | `/`           | List roles           | ❌   | ❌        | ✅    | `role_manage` |
+| GET    | `/{role_id}`  | Role details         | ❌   | ❌        | ✅    | `role_manage` |
+| POST   | `/`           | Create role          | ❌   | ❌        | ✅    | `role_manage` |
+| PUT    | `/{role_id}`  | Update role          | ❌   | ❌        | ✅    | `role_manage` |
+| DELETE | `/{role_id}`  | Delete role          | ❌   | ❌        | ✅    | `role_manage` |
+| POST   | `/initialize` | Create default roles | ❌   | ❌        | ✅    | `role_manage` |
 
 ### 📊 Audit Logs (`/api/v1/audit-logs/`)
 
-| Method | Endpoint    | Açıklama                | User | Moderator | Admin | Permission   |
-| ------ | ----------- | ----------------------- | ---- | --------- | ----- | ------------ |
-| GET    | `/`         | Audit logları listeleme | ❌   | ❌        | ✅    | `audit_view` |
-| GET    | `/{log_id}` | Audit log detayları     | ❌   | ❌        | ✅    | `audit_view` |
+| Method | Endpoint    | Description       | User | Moderator | Admin | Permission   |
+| ------ | ----------- | ----------------- | ---- | --------- | ----- | ------------ |
+| GET    | `/`         | List audit logs   | ❌   | ❌        | ✅    | `audit_view` |
+| GET    | `/{log_id}` | Audit log details | ❌   | ❌        | ✅    | `audit_view` |
 
-## 👥 Kullanıcı Rolleri ve Yetkileri
+## 👥 User Roles and Permissions
 
-### 🔴 **User (Normal Kullanıcı) - Rol ID: 3**
+### 🔴 **User (Normal User) - Role ID: 3**
 
-**Temel Yetkiler:**
+**Basic Permissions:**
 
-- Kendi profilini yönetme
-- İçerik oluşturma ve yönetme
-- Authentication işlemleri
+- Manage own profile
+- Create and manage content
+- Authentication operations
 
-**Permission'lar:**
+**Permissions:**
 
-- `user_read` - Kendi profilini okuma
-- `user_update_own` - Kendi profilini güncelleme
-- `content_read` - İçerik okuma
-- `content_create` - İçerik oluşturma
-- `content_update_own` - Kendi içeriğini güncelleme
-- `content_delete_own` - Kendi içeriğini silme
+- `user_read` - Read own profile
+- `user_update_own` - Update own profile
+- `content_read` - Read content
+- `content_create` - Create content
+- `content_update_own` - Update own content
+- `content_delete_own` - Delete own content
 
-**Erişebileceği Endpoint'ler:**
+**Accessible Endpoints:**
 
-- ✅ `/api/v1/auth/*` - Tüm authentication endpoint'leri
-- ✅ `/api/v1/users/{kendi_id}` - Kendi profilini görme/güncelleme
-- ✅ `/api/v1/content/*` - İçerik CRUD işlemleri (kendi içeriği)
+- ✅ `/api/v1/auth/*` - All authentication endpoints
+- ✅ `/api/v1/users/{own_id}` - View/update own profile
+- ✅ `/api/v1/content/*` - Content CRUD operations (own content)
 
-**Erişemeyeceği Endpoint'ler:**
+**Restricted Endpoints:**
 
-- ❌ `/api/v1/users/` - Tüm kullanıcıları listeleme
-- ❌ `/api/v1/admin/*` - Admin paneli
-- ❌ `/api/v1/moderator/*` - Moderator paneli
-- ❌ `/api/v1/roles/*` - Rol yönetimi
-- ❌ `/api/v1/audit-logs/*` - Audit logları
-
----
-
-### 🟡 **Moderator (Moderatör) - Rol ID: 2**
-
-**Temel Yetkiler:**
-
-- User yetkileri + moderasyon yetkileri
-- Kullanıcı moderasyonu
-- İçerik moderasyonu
-- Rapor yönetimi
-
-**Permission'lar:**
-
-- **User permissions** (yukarıdaki tümü) +
-- `content_moderate` - İçerik moderasyonu
-- `user_moderate` - Kullanıcı moderasyonu
-- `report_manage` - Rapor yönetimi
-
-**Erişebileceği Endpoint'ler:**
-
-- ✅ Tüm User endpoint'leri
-- ✅ `/api/v1/moderator/users` - Moderation için kullanıcı listesi
-- ✅ `/api/v1/moderator/users/{user_id}` - Kullanıcı detayları (moderation)
-- ✅ `/api/v1/moderator/users/{user_id}/suspend` - Kullanıcı askıya alma
-- ✅ `/api/v1/moderator/users/{user_id}/activate` - Kullanıcı aktivasyonu
-- ✅ `/api/v1/moderator/reports` - Rapor yönetimi
-- ✅ `/api/v1/content/{content_id}/moderate` - İçerik moderasyonu
-
-**Erişemeyeceği Endpoint'ler:**
-
-- ❌ `/api/v1/admin/*` - Admin paneli
-- ❌ `/api/v1/roles/*` - Rol yönetimi
-- ❌ `/api/v1/audit-logs/*` - Audit logları
+- ❌ `/api/v1/users/` - List all users
+- ❌ `/api/v1/admin/*` - Admin panel
+- ❌ `/api/v1/moderator/*` - Moderator panel
+- ❌ `/api/v1/roles/*` - Role management
+- ❌ `/api/v1/audit-logs/*` - Audit logs
 
 ---
 
-### 🟢 **Admin (Yönetici) - Rol ID: 1**
+### 🟡 **Moderator (Moderator) - Role ID: 2**
 
-**Temel Yetkiler:**
+**Basic Permissions:**
 
-- Tüm yetkiler
-- Tam sistem yönetimi
-- Kullanıcı, rol ve permission yönetimi
-- Audit logları görüntüleme
+- User permissions + moderation permissions
+- User moderation
+- Content moderation
+- Report management
 
-**Permission'lar:**
+**Permissions:**
 
-- **Moderator permissions** (yukarıdaki tümü) +
-- `user_manage` - Kullanıcı yönetimi
-- `role_manage` - Rol yönetimi
-- `system_manage` - Sistem yönetimi
-- `audit_view` - Audit logları görme
+- **User permissions** (all above) +
+- `content_moderate` - Content moderation
+- `user_moderate` - User moderation
+- `report_manage` - Report management
 
-**Erişebileceği Endpoint'ler:**
+**Accessible Endpoints:**
 
-- ✅ Tüm User ve Moderator endpoint'leri
-- ✅ `/api/v1/admin/users` - Tüm kullanıcıları yönetme
-- ✅ `/api/v1/admin/users/{user_id}` - Kullanıcı detayları (admin)
-- ✅ `/api/v1/admin/users/{user_id}` (PUT) - Kullanıcı güncelleme (admin)
-- ✅ `/api/v1/admin/users/{user_id}` (DELETE) - Kullanıcı silme (admin)
-- ✅ `/api/v1/admin/audit-logs` - Audit logları görüntüleme
-- ✅ `/api/v1/roles/*` - Rol yönetimi
-- ✅ `/api/v1/audit-logs/*` - Audit logları
+- ✅ All User endpoints
+- ✅ `/api/v1/moderator/users` - User list for moderation
+- ✅ `/api/v1/moderator/users/{user_id}` - User details (moderation)
+- ✅ `/api/v1/moderator/users/{user_id}/suspend` - Suspend user
+- ✅ `/api/v1/moderator/users/{user_id}/activate` - Activate user
+- ✅ `/api/v1/moderator/reports` - Report management
+- ✅ `/api/v1/content/{content_id}/moderate` - Content moderation
 
-**Özel Admin Yetkileri:**
+**Restricted Endpoints:**
 
-- Kullanıcı silme
-- Rol değiştirme
-- Sistem yönetimi
-- Audit logları görüntüleme
+- ❌ `/api/v1/admin/*` - Admin panel
+- ❌ `/api/v1/roles/*` - Role management
+- ❌ `/api/v1/audit-logs/*` - Audit logs
 
-## 🔐 Permission Sistemi Detayları
+---
 
-### **Permission Kategorileri:**
+### 🟢 **Admin (Administrator) - Role ID: 1**
 
-#### 👤 **User Permissions (Kullanıcı Yetkileri)**
+**Basic Permissions:**
 
-- `user_read` - Kendi profilini okuma
-- `user_update_own` - Kendi profilini güncelleme
+- All permissions
+- Complete system management
+- User, role and permission management
+- Audit log viewing
 
-#### 📝 **Content Permissions (İçerik Yetkileri)**
+**Permissions:**
 
-- `content_read` - İçerik okuma
-- `content_create` - İçerik oluşturma
-- `content_update_own` - Kendi içeriğini güncelleme
-- `content_delete_own` - Kendi içeriğini silme
-- `content_moderate` - İçerik moderasyonu
+- **Moderator permissions** (all above) +
+- `user_manage` - User management
+- `role_manage` - Role management
+- `system_manage` - System management
+- `audit_view` - View audit logs
 
-#### 🛠️ **Moderation Permissions (Moderasyon Yetkileri)**
+**Accessible Endpoints:**
 
-- `user_moderate` - Kullanıcı moderasyonu
-- `report_manage` - Rapor yönetimi
+- ✅ All User and Moderator endpoints
+- ✅ `/api/v1/admin/users` - Manage all users
+- ✅ `/api/v1/admin/users/{user_id}` - User details (admin)
+- ✅ `/api/v1/admin/users/{user_id}` (PUT) - Update user (admin)
+- ✅ `/api/v1/admin/users/{user_id}` (DELETE) - Delete user (admin)
+- ✅ `/api/v1/admin/audit-logs` - View audit logs
+- ✅ `/api/v1/roles/*` - Role management
+- ✅ `/api/v1/audit-logs/*` - Audit logs
 
-#### 🛡️ **Admin Permissions (Yönetici Yetkileri)**
+**Special Admin Permissions:**
 
-- `user_manage` - Kullanıcı yönetimi
-- `role_manage` - Rol yönetimi
-- `system_manage` - Sistem yönetimi
-- `audit_view` - Audit logları görme
+- Delete users
+- Change roles
+- System management
+- View audit logs
 
-### **Permission Hiyerarşisi:**
+## 🔐 Permission System Details
+
+### **Permission Categories:**
+
+#### 👤 **User Permissions (User Rights)**
+
+- `user_read` - Read own profile
+- `user_update_own` - Update own profile
+
+#### 📝 **Content Permissions (Content Rights)**
+
+- `content_read` - Read content
+- `content_create` - Create content
+- `content_update_own` - Update own content
+- `content_delete_own` - Delete own content
+- `content_moderate` - Content moderation
+
+#### 🛠️ **Moderation Permissions (Moderation Rights)**
+
+- `user_moderate` - User moderation
+- `report_manage` - Report management
+
+#### 🛡️ **Admin Permissions (Administrator Rights)**
+
+- `user_manage` - User management
+- `role_manage` - Role management
+- `system_manage` - System management
+- `audit_view` - View audit logs
+
+### **Permission Hierarchy:**
 
 ```
-Admin (Tüm yetkiler)
+Admin (All permissions)
 ├── Moderator Permissions
 │   ├── User Permissions
 │   ├── Content Permissions
 │   └── Moderation Permissions
 └── Admin Permissions
 
-Moderator (Sınırlı yönetici yetkileri)
+Moderator (Limited admin privileges)
 ├── User Permissions
 ├── Content Permissions
 └── Moderation Permissions
 
-User (Temel kullanıcı yetkileri)
+User (Basic user permissions)
 ├── User Permissions
 └── Content Permissions
 ```
 
-## 📱 Kullanım Örnekleri
+## 📱 Usage Examples
 
-### 🔐 **Login Akışı**
+### 🔐 **Login Flow**
 
-1. **Login (OTP gönderir)**
+1. **Login (sends OTP)**
 
 ```bash
 curl -X POST "http://localhost:8000/api/v1/auth/login" \
@@ -362,7 +362,7 @@ curl -X POST "http://localhost:8000/api/v1/auth/login" \
 }
 ```
 
-2. **OTP Doğrula (Token alır)**
+2. **Verify OTP (get token)**
 
 ```bash
 curl -X POST "http://localhost:8000/api/v1/auth/verify-login" \
@@ -380,14 +380,14 @@ curl -X POST "http://localhost:8000/api/v1/auth/verify-login" \
 }
 ```
 
-### 👤 **User İşlemleri**
+### 👤 **User Operations**
 
 ```bash
-# Kendi profilini görme
+# View own profile
 curl -H "Authorization: Bearer YOUR_TOKEN" \
   "http://localhost:8000/api/v1/users/123"
 
-# İçerik oluşturma
+# Create content
 curl -X POST "http://localhost:8000/api/v1/content/" \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
@@ -398,77 +398,77 @@ curl -X POST "http://localhost:8000/api/v1/content/" \
   }'
 ```
 
-### 🛡️ **Admin İşlemleri**
+### 🛡️ **Admin Operations**
 
 ```bash
-# Tüm kullanıcıları listeleme
+# List all users
 curl -H "Authorization: Bearer ADMIN_TOKEN" \
   "http://localhost:8000/api/v1/admin/users"
 
-# Kullanıcı silme
+# Delete user
 curl -X DELETE "http://localhost:8000/api/v1/admin/users/123" \
   -H "Authorization: Bearer ADMIN_TOKEN"
 
-# Audit logları görme
+# View audit logs
 curl -H "Authorization: Bearer ADMIN_TOKEN" \
   "http://localhost:8000/api/v1/admin/audit-logs"
 ```
 
-### 🛠️ **Moderator İşlemleri**
+### 🛠️ **Moderator Operations**
 
 ```bash
-# Kullanıcıları moderasyon için listeleme
+# List users for moderation
 curl -H "Authorization: Bearer MODERATOR_TOKEN" \
   "http://localhost:8000/api/v1/moderator/users"
 
-# Kullanıcıyı askıya alma
+# Suspend user
 curl -X PUT "http://localhost:8000/api/v1/moderator/users/123/suspend" \
   -H "Authorization: Bearer MODERATOR_TOKEN"
 
-# İçerik moderasyonu
+# Moderate content
 curl -X PUT "http://localhost:8000/api/v1/content/456/moderate" \
   -H "Authorization: Bearer MODERATOR_TOKEN"
 ```
 
-## 🛠️ Geliştirme
+## 🛠️ Development
 
-### Makefile Komutları
+### Makefile Commands
 
 ```bash
-# Sunucuyu başlat (port kontrolü ile)
+# Start server (with port check)
 make run
 
-# Sadece portu boşalt
+# Just free the port
 make kill-port
 
-# Sunucuyu durdur
+# Stop server
 make stop
 ```
 
-### Veritabanı İşlemleri
+### Database Operations
 
 ```bash
-# Migration oluştur
+# Create migration
 alembic revision --autogenerate -m "Description"
 
-# Migration uygula
+# Apply migration
 alembic upgrade head
 
-# Migration geri al
+# Rollback migration
 alembic downgrade -1
 ```
 
-### Test
+### Testing
 
 ```bash
-# Testleri çalıştır
+# Run tests
 python -m pytest tests/ -v
 
-# Coverage raporu
+# Coverage report
 python -m pytest tests/ --cov=app --cov-report=html
 ```
 
-## 🔧 Konfigürasyon
+## 🔧 Configuration
 
 ### Environment Variables
 
@@ -493,21 +493,21 @@ APP_NAME=FastAPI Auth System
 DEBUG=True
 ```
 
-## 📊 Monitoring ve Logging
+## 📊 Monitoring and Logging
 
 ### Audit Logs
 
-- Tüm kritik işlemler loglanır
-- IP adresi ve user agent kaydedilir
-- Başarılı/başarısız işlemler ayrı ayrı loglanır
-- Log seviyeleri: DEBUG, INFO, WARNING, ERROR
+- All critical operations are logged
+- IP address and user agent are recorded
+- Successful/failed operations are logged separately
+- Log levels: DEBUG, INFO, WARNING, ERROR
 
-### Log Dosyaları
+### Log Files
 
-- `logs/app.log` - Genel uygulama logları
-- `logs/error.log` - Hata logları
+- `logs/app.log` - General application logs
+- `logs/error.log` - Error logs
 
-### Log Formatı
+### Log Format
 
 ```
 2025-10-05 17:20:58 | INFO | app.services.auth_service:login_success:45 - User 123 logged in successfully
@@ -515,7 +515,7 @@ DEBUG=True
 
 ## 🚀 Production Deployment
 
-### Docker ile Deploy
+### Deploy with Docker
 
 ```dockerfile
 FROM python:3.9-slim
@@ -575,61 +575,61 @@ export SMTP_USERNAME="your-email@gmail.com"
 export SMTP_PASSWORD="your-app-password"
 ```
 
-## 🔒 Güvenlik Best Practices
+## 🔒 Security Best Practices
 
-### JWT Token Güvenliği
+### JWT Token Security
 
-- Token'lar kısa süreli (30 dakika)
-- Refresh token'lar uzun süreli (7 gün)
-- Token'lar HTTPS üzerinden gönderilmeli
-- **Token Blacklist Sistemi**: Logout'ta token'lar blacklist'e eklenir ve geçersiz hale getirilir
-- **JTI (JWT ID)**: Her token'ın benzersiz kimliği ile blacklist kontrolü
-- **Otomatik Blacklist Kontrolü**: Her API isteğinde token blacklist kontrolü yapılır
-- **Güvenli Logout**: Logout sonrası eski token ile hiçbir işlem yapılamaz
+- Tokens are short-lived (30 minutes)
+- Refresh tokens are long-lived (7 days)
+- Tokens should be sent over HTTPS
+- **Token Blacklist System**: Tokens are added to blacklist on logout and invalidated
+- **JTI (JWT ID)**: Unique token identity for blacklist control
+- **Automatic Blacklist Check**: Token blacklist check on every API request
+- **Secure Logout**: No operations can be performed with old tokens after logout
 
-### OTP Güvenliği
+### OTP Security
 
-- OTP'ler 5 dakika geçerli
-- OTP'ler sadece bir kez kullanılabilir
-- OTP'ler email ile gönderilir
-- OTP'ler log'da görünmez (production'da)
+- OTPs are valid for 5 minutes
+- OTPs can only be used once
+- OTPs are sent via email
+- OTPs are not visible in logs (in production)
 
-### Database Güvenliği
+### Database Security
 
-- SQL injection koruması
-- Prepared statements kullanımı
+- SQL injection protection
+- Prepared statements usage
 - Connection pooling
-- Database backup'ları
+- Database backups
 
-## 🤝 Katkıda Bulunma
+## 🤝 Contributing
 
-1. Fork edin
-2. Feature branch oluşturun (`git checkout -b feature/amazing-feature`)
-3. Commit edin (`git commit -m 'Add amazing feature'`)
-4. Push edin (`git push origin feature/amazing-feature`)
-5. Pull Request oluşturun
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Create a Pull Request
 
-## 📄 Lisans
+## 📄 License
 
-Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için `LICENSE` dosyasına bakın.
+This project is licensed under the MIT License. See the `LICENSE` file for details.
 
-## 📞 İletişim
+## 📞 Contact
 
-- **Proje Sahibi**: [Your Name]
+- **Project Owner**: [Your Name]
 - **Email**: your.email@example.com
 - **GitHub**: [Your GitHub Profile]
 
-## 🙏 Teşekkürler
+## 🙏 Acknowledgments
 
-- FastAPI ekibine
-- SQLAlchemy ekibine
-- Tüm açık kaynak katkıda bulunanlara
+- FastAPI team
+- SQLAlchemy team
+- All open source contributors
 
 ---
 
-**Not**: Bu sistem production ortamında kullanılmadan önce güvenlik testlerinden geçirilmelidir.
+**Note**: This system should undergo security testing before being used in production.
 
-## 📚 Ek Kaynaklar
+## 📚 Additional Resources
 
 - [FastAPI Documentation](https://fastapi.tiangolo.com/)
 - [SQLAlchemy Documentation](https://docs.sqlalchemy.org/)
